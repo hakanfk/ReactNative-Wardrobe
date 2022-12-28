@@ -11,6 +11,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "This app needs your permission to take picture"
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },

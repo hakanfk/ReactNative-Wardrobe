@@ -1,0 +1,23 @@
+<Pressable onPress={() => setChangeColor(!changeColor)}
+                                    style={{}} >
+                                    <View style={[styles.answerContainer,
+                                    {
+                                        backgroundColor: changeColor ? '' : selectedColor,
+                                        color: changeColor ? 'white' : 'white'
+                                    }]} >
+                                        <Text style={styles.answerText}  >Cevap1</Text>
+                                    </View>
+                                </Pressable>
+
+                                <Pressable>
+                                    <View style={styles.answerContainer} >
+                                        <Text style={
+                                            styles.answerText} >Cevap1</Text>
+                                    </View>
+                                </Pressable>
+                                <Pressable>
+                                    <View style={styles.answerContainer} >
+                                        <Text style={
+                                            styles.answerText} >Cevap1</Text>
+                                    </View>
+                                </Pressable>
