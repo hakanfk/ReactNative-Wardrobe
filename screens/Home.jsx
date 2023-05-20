@@ -1,26 +1,55 @@
 import { View, Text, StyleSheet, FlatList, ScrollView, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SearchBar } from 'react-native-screens'
 import Search from '../components/Search'
 import NewsContainer from '../components/NewsContainer'
+import MyIcon from '../components/MyIcon'
+import { AuthContext } from '../store/ctxAuth'
 
 
-const Home = () => {
+const data = [
+    {
+        id: 1,
+        title: 'Mini Wardrobe',
+        author: 'Candice Batista',
+        content: 'A minimalist capsule wardrobe is a wonderfully simple solution to getting dressed every morning but it is also a great way to reduce our environmental footprint. Because minimalism relies in large part on the thoughtful curation of only the items we need, it inherently reduces the number of items we purchase and own. ',
+        urlToImage: 'https://theecohub.com/wp-content/uploads/2021/07/minimalist-wardrobe2-294x441@2x.jpg'
+    },
+    {
+        id: 2,
+        title: 'Mini Wardrobe',
+        author: 'Candice Batista',
+        content: '',
+        urlToImage: 'https://theecohub.com/wp-content/uploads/2021/07/minimalist-wardrobe2-294x441@2x.jpg'
 
-    const [data, setdata] = useState([])
-    const [isLoading, setisLoading] = useState(true)
+    },
+    {
+        id: 3,
+        title: 'Mini Wardrobe',
+        author: 'Candice Batista',
+        content: 'A minimalist capsule wardrobe is a wonderfully simple solution to getting dressed every morning but it is also a great way to reduce our environmental footprint. Because minimalism relies in large part on the thoughtful curation of only the items we need, it inherently reduces the number of items we purchase and own. ',
+        urlToImage: 'https://theecohub.com/wp-content/uploads/2021/07/minimalist-wardrobe2-294x441@2x.jpg'
 
-    useEffect(() => {
-        setTimeout(() => {
-            fetch('https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=c05e9e318dde446e8de32c218f89a3ed')
-                .then(res => res.json()).then((json) => {
-                    setdata(json.articles);
-                    console.log(json);
-                    setisLoading(false)
-                })
-                .catch((err) => Alert.alert(err))
-        }, 700)
-    }, [])
+    },
+    {
+        id: 4,
+        title: 'Mini Wardrobe',
+        author: 'Candice Batista',
+        content: 'A minimalist capsule wardrobe is a wonderfully simple solution to getting dressed every morning but it is also a great way to reduce our environmental footprint. Because minimalism relies in large part on the thoughtful curation of only the items we need, it inherently reduces the number of items we purchase and own. ',
+        urlToImage: 'https://theecohub.com/wp-content/uploads/2021/07/minimalist-wardrobe2-294x441@2x.jpg'
+
+    }
+]
+
+
+
+const Home = ({ navigation }) => {
+
+    const [isLoading, setisLoading] = useState(false)
+
+    const authCtx = useContext(AuthContext)
+
+
 
 
     function renderItemHandler(itemData) {
@@ -30,14 +59,32 @@ const Home = () => {
         )
     }
 
+    function logoutHandler() {
+        try {
+            authCtx.logout()
+            //navigation.navigate('OnboardingScreen')
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <View style={{ flex: 1 }} >
             <View style={styles.container} >
-                <View>
-                    <Search />
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }} >
+                    <View style={{ flex: 4, marginRight: 35, marginLeft: -15 }} >
+                        <Search />
+                    </View>
+                    <MyIcon icon={'logout'} size={33} color='black'
+                        onPressProp={logoutHandler}
+                    />
                 </View>
                 <View   >
-                    <Text style={styles.news} > News</Text>
+                    <Text style={styles.news} >Discover</Text>
                 </View>
                 <ScrollView style={{ marginTop: 5 }} >
                     {

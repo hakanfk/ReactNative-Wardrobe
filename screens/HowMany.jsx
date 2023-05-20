@@ -14,7 +14,7 @@ const HowMany = ({ navigation }) => {
 
     function startHandler() {
         dispatch(setByValue(Number(enteredNumber)))
-        navigation.navigate('ClothName')
+        navigation.navigate('Questions')
     }
 
     function numberHandler(enteredNumber) {

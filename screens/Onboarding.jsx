@@ -5,6 +5,7 @@ import Button from '../components/Button'
 import EmptyButton from '../components/EmptyButton'
 import LottieView from 'lottie-react-native';
 
+
 const width = Dimensions.get('window').width
 
 const images = [
@@ -20,14 +21,14 @@ const images = [
         img: require("../images/98886-wardrobe.json"),
         color: 'blue',
         title: 'Herkes için sdknfkldnfkldnfinldk',
-        description: 'ben eve geldim sen yoktun şimdi ben napmali sana dayak mi atmali?'
+        description: 'Sizin de Dünyanızı, Yeşili Seviyor Musunuz?'
     },
     {
         id: 3,
         img: require("../images/8273-chracter-3.json"),
         color: 'red',
         title: 'Herkes için Türkiye',
-        description: 'ben eve geldim sen yoktun şimdi ben napmali sana dayak mi atmali?'
+        description: 'O Zaman Şimdi Değişime Katılmanın Tam Zamanı?'
     }
 ]
 
@@ -36,7 +37,10 @@ const Onboarding = ({ navigation }) => {
     const scrollX = useRef(new Animated.Value(0)).current
     let position = Animated.divide(scrollX, width)
 
+
+
     function signInHandler() {
+
         navigation.navigate('SignIn')
     }
 

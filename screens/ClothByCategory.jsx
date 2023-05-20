@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import MyIcon from '../components/MyIcon'
 import { useDispatch, useSelector } from 'react-redux'
 import addToFav, { removeFromFav, addToFavorite } from '../store/addToFav'
+import DontHaveAny from '../components/DontHaveAny'
 
 
 const clothesArray = [
@@ -41,6 +42,8 @@ const ClothByCategory = ({ route, navigation }) => {
     const category = route?.params.clothCategory
 
     const clothes = clothesArray.filter((item) => category === item.category)
+
+    console.log(clothes.length);
 
     const isClothFavorite = favClothIds.includes(clothes.id)
 
@@ -86,6 +89,28 @@ const ClothByCategory = ({ route, navigation }) => {
         navigation.navigate('MyGardrobe')
     }
 
+    /* function DontHaveAny() {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                <Text>
+                    Seems Like You Dont Have Any {category}
+                </Text>
+            </View>
+        )
+    } */
+
+    function HaveCloth() {
+        return (
+            <View style={styles.clothStyle} >
+
+                <FlatList data={clothes} keyExtractor={(item) => item.id}
+                    renderItem={imageRenderHandler} numColumns={2} />
+
+            </View>
+        )
+    }
+
+
     return (
         <View style={{
             margin: 20, marginTop: 30
@@ -94,12 +119,8 @@ const ClothByCategory = ({ route, navigation }) => {
 
             <Text style={styles.titleText} > Your {category}'s </Text>
 
-            <View style={styles.clothStyle} >
-
-                <FlatList data={clothes} keyExtractor={(item) => item.id}
-                    renderItem={imageRenderHandler} numColumns={2} />
-
-            </View>
+            {clothes.length == 0 && <DontHaveAny cloth={category} />}
+            {clothes.length != 0 && <HaveCloth />}
 
         </View>
     )

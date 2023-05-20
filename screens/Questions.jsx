@@ -73,8 +73,6 @@ const Questions = ({ navigation, route }) => {
 
     function nextHandle() {
         if (questionIndex == allQuestions.length) {
-            /* const sum = puanArray.reduce((partialSum, a) => partialSum + a, 0)
-            setPuanByClothArr((prevState) => [...prevState, sum]) */
             if (clothNumber > 1) {
                 dispatch(decrement())
                 console.log(clothNumber);
@@ -88,8 +86,6 @@ const Questions = ({ navigation, route }) => {
                     setisFinished(1)
                 }, 700)
             }
-            //console.log(clothNumber);
-            //Alert.alert('Nannnayy')
         } else {
             setquestionIndex(questionIndex + 1);
             console.log('Puan statei' + puan);

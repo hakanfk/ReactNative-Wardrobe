@@ -8,7 +8,8 @@ import WellDoneScreen from '../components/WellDoneScreen'
 import { createUser } from '../util/auth'
 import LottieView from 'lottie-react-native';
 import { AuthContext } from '../store/ctxAuth'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { setTokenString } from '../store/token'
 
 const SignUp = ({ navigation }) => {
 
@@ -18,6 +19,9 @@ const SignUp = ({ navigation }) => {
     const [isAuthenticating, setisAuthenticating] = useState(false)
 
     const authCtx = useContext(AuthContext)
+
+    const tokenStore = useSelector((state) => state.setToken.token)
+    const dispatch = useDispatch()
 
     function emailHandler(enteredText) {
         setEmail(enteredText)
@@ -29,6 +33,7 @@ const SignUp = ({ navigation }) => {
 
 
     async function continueHandler() {
+        console.log('hi')
         if (email.length < 6 || password.length < 6) {
             Alert.alert('Check your informations and Try Again', 'Okay')
             setEmail('');
@@ -38,13 +43,17 @@ const SignUp = ({ navigation }) => {
 
             try {
                 const token = await createUser(email, password)
-                authCtx.authenticate(token)
+                dispatch(setTokenString({ token: token }))
+                console.log(tokenStore);
+                navigation.navigate('WellDoneScreen')
+
                 setisAuthenticating(false)
             } catch (error) {
-                Alert.alert('Authentication Failed', 'Check Your Credentials!!!')
+                Alert.alert('Authentication Failed', error)
+                console.log(error);
             }
 
-            setIsSignUpSuc(true)
+
         }
     }
 
@@ -64,12 +73,6 @@ const SignUp = ({ navigation }) => {
         )
     }
 
-    if (isSignUpSuc) {
-        return (
-            <WellDoneScreen />
-        )
-    }
-
 
     return (
         <View style={{ backgroundColor: '#fefefe', flex: 1 }} >
@@ -77,9 +80,10 @@ const SignUp = ({ navigation }) => {
                 <View>
                     <MyIcon icon='leftcircle' size={40} onPressProp={iconHandler} />
                 </View>
-                {/* <View>
-                    <Image source={require('../images/brand.png')} />
-                </View> */}
+                <View style={{ alignItems: 'center', justifyContent: 'center' }} >
+                    <Image source={require('../images/apple-icon-180x180.png')} />
+                    <Text style={{ fontSize: 24, fontWeight: '500', marginTop: 17 }} >Minirobe</Text>
+                </View>
                 <View style={[styles.form, { marginTop: 50 }]} >
                     {/* <Text style={{ margin: 7, fontWeight: 'bold', fontSize: 15 }} >User Name</Text>
                     <TextInput placeholder='username' style={styles.mail}
@@ -101,11 +105,11 @@ const SignUp = ({ navigation }) => {
 
                 <View style={styles.continue} >
                     <Button title='Sign Up' onPressProp={continueHandler} color='#a7fc84' />
-                    <Text style={{ textAlign: 'center', color: 'gray' }} > OR </Text>
+                    {/* <Text style={{ textAlign: 'center', color: 'gray' }} > OR </Text> */}
                 </View>
-                <View style={styles.google} >
+                {/* <View style={styles.google} >
                     <Button title='Sign Up with Google' onPressProp={continueHandler} color='#101b32' />
-                </View>
+                </View> */}
             </View>
         </View>
     )

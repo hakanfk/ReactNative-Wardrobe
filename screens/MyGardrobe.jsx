@@ -1,116 +1,117 @@
 import { View, Text, StyleSheet, ScrollView, Pressable, FlatList, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Clothes from '../components/Clothes'
 import MyIcon from '../components/MyIcon'
+import { getEmail, getGardrobe } from '../util/auth'
+import { AuthContext } from '../store/ctxAuth'
 
 const data = [{
     id: 1,
-    category: 'Coat',
+    category: 'HIRKA',
     uri: require("../clothImages/coat.jpg")
 },
 {
     id: 2,
-    category: 'Dress',
+    category: 'ELBISE',
     uri: require('../clothImages/dress.jpg')
 },
 {
     id: 3,
-    category: 'Jacket',
+    category: 'CEKET',
     uri: require('../clothImages/jacket.jpg')
 },
 {
     id: 4,
-    category: 'Jeans',
+    category: 'PANTOLON',
     uri: require('../clothImages/jeans.jpg')
 },
 {
     id: 5,
-    category: 'Shirt',
+    category: 'GOMLEK',
     uri: require('../clothImages/shirt.jpg')
 },
 {
     id: 6,
-    category: 'Shorts',
+    category: 'SORT',
     uri: require('../clothImages/shorts.jpg')
 },
 {
     id: 7,
-    category: 'Skirt',
+    category: 'ETEK',
     uri: require('../clothImages/skirt.jpg')
 },
 {
     id: 8,
-    category: 'Sweater',
+    category: 'KAZAK',
     uri: require('../clothImages/sweater.jpg')
 }]
 
+let enumlar = [
+    {
+        cevap: 'Hırka',
+        enum: "HIRKA"
+    },
+    {
+        cevap: 'Elbise',
+        enum: "ELBISE"
+    },
+    {
+        cevap: 'Ceket',
+        enum: "CEKET"
+    },
+    {
+        cevap: 'Pantolon',
+        enum: "PANTOLON"
+    },
+    {
+        cevap: 'Gömlek',
+        enum: "GOMLEK"
+    },
+    {
+        cevap: 'Şort',
+        enum: "SORT"
+    },
+    {
+        cevap: 'Etek',
+        enum: "ETEK"
+    },
+    {
+        cevap: 'Kazak',
+        enum: "KAZAK"
+    },
+    {
+        cevap: 'Tişört',
+        enum: "TISORT"
+    },
+]
 const Home = ({ navigation, route }) => {
-
-    const [selectedCategory, setselectedCategory] = useState('')
-    const [selectedClothes, setSelectedClothes] = useState('')
-    const [pressed, setPressed] = useState(false)
-
-    let socket;
+    const [clothes, setClothes] = useState([])
+    const authCtx = useContext(AuthContext)
+    const [mail, setMail] = useState('')
 
     useEffect(() => {
-        const clothEffect = selectedClothes
-        console.log("Inside a useEffect");
-        console.log(selectedClothes);
-        setSelectedClothes(clothEffect)
-        socket = selectedClothes
-        navigation.navigate('ClothByCategory', {
-            clothCategory: socket
-        })
-    }, [selectedClothes])
+        async function getClothes() {
+            const clothRes = await getGardrobe(authCtx.token)
 
-    function categoryHandler(category) {
+            const mail = await getEmail(authCtx.token)
+            setMail(mail)
 
-        setselectedCategory(category)
-        console.log(selectedCategory);
-    }
+            console.log(clothRes)
+            for (let i = 0; i < clothRes.length; i++) {
+                clothRes[i]['q'] = i + 1;
+                clothRes[i].imgSrc = data.find(itm => itm.category === clothRes[i].type).uri;
+                clothRes[i].type = enumlar.find(itm => itm.enum === clothRes[i].type).cevap;
 
-
-    function renderHandler(itemData) {
-
-        return (
-            <Pressable onPress={() => {
-                const clothName = itemData.item.category
-                setSelectedClothes(clothName)
-                setTimeout(() => (console.log('bekle')), 500)
-                console.log('In a function');
-                console.log(selectedClothes);
-
-
-            }} >
-                <View style={{ marginVertical: 14, marginHorizontal: 20 }} >
-                    <Image source={itemData.item.uri}
-                        style={{ width: 140, height: 140, borderRadius: 20 }}
-                    />
-                    <View style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        height: 25,
-                        width: 70,
-                        backgroundColor: 'white',
-                        borderTopRightRadius: 10,
-                        borderBottomLeftRadius: 20,
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }} >
-                        <Text> {itemData.item.category} </Text>
-                    </View>
-                </View>
-            </Pressable>
-        )
-    }
-
+            }
+            setClothes(clothRes)
+            console.log(clothRes)
+        }
+        getClothes();
+    }, [])
     return (
-
-
-        //<ScrollView>
         <View style={styles.container} >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                <Text style={styles.userName}>Hi Hakan, </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 14 }} >
+                <Text style={styles.userName}>Hi {mail}  </Text>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }} >
                     <MyIcon icon={'heart'} size={35} onPressProp={() =>
                         navigation.navigate('FavsScreen')} />
@@ -119,40 +120,26 @@ const Home = ({ navigation, route }) => {
 
             </View>
             <View style={{ marginTop: 15 }} >
-                <Text style={styles.userName}>It's Your
-                    <Text style={{ fontSize: 29, fontWeight: 'bold' }} > Wardrobe</Text> </Text>
+                <Text style={{ fontSize: 29, fontWeight: 'bold' }} >Kıyafetlerim</Text>
             </View>
 
-            <View  >
-                <ScrollView horizontal style={styles.scrollView}
-                    showsHorizontalScrollIndicator={false} >
-                    {data.map((item, index) => {
-                        return (
-                            <Pressable key={item.id}
-                                style={{
-                                    backgroundColor: (selectedCategory == item.id) ? 'black' : null,
-                                    borderRadius: 14,
-                                    alignItems: 'stretch',
-                                    borderColor: 'gray',
-                                    padding: 7,
-                                    marginHorizontal: 9,
-                                }} onPress={() => categoryHandler(item.category)} >
-                                <Text style={{
-                                    color: (selectedCategory == item.id) ? 'white' : null,
-                                    fontWeight: '300',
-                                    fontSize: 15
-                                }} >{item.category} </Text>
-                            </Pressable>
-                        )
-                    })}
-                </ScrollView>
-            </View>
+
 
             <ScrollView style={{ alignContent: 'center', marginBottom: 96, marginTop: 10 }}
                 showsVerticalScrollIndicator={false} >
+                {clothes.map(item => {
+                    return (
+                        <View style={styles.questionContainer} >
+                            <Image source={item.imgSrc} style={{
+                                width: 80
+                                , height: 80,
+                                borderRadius: 16
 
-                <FlatList data={data} numColumns={2} keyExtractor={(item) => (item.id)}
-                    renderItem={renderHandler} showsVerticalScrollIndicator={false} />
+                            }} />
+                            <Text style={styles.kiyafet}>Kıyafet#{item.q} - {item.type}</Text>
+                        </View>);
+                })}
+
             </ScrollView>
 
 
@@ -207,5 +194,19 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 18
     },
+    questionContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        marginHorizontal: 5,
+        marginVertical: 10,
+        padding: 20,
+        textAlign: "center",
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    kiyafet: {
+        fontSize: 20,
+        marginLeft: 15
+    }
 
 })

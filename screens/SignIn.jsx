@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native'
 import MyIcon from '../components/MyIcon'
 import { useState } from 'react'
 import Button from '../components/Button'
-import { loginUser } from '../util/auth'
+import { getEmail, loginUser } from '../util/auth'
 import Home from './Home'
+import { useDispatch, useSelector } from 'react-redux'
 import { AuthContext } from '../store/ctxAuth'
 
 
@@ -20,6 +21,9 @@ const SignIn = ({ navigation }) => {
 
     const authCtx = useContext(AuthContext)
 
+    const tokenStore = useSelector((state) => state.setToken.token)
+    const dispatch = useDispatch()
+
     function emailHandler(enteredText) {
         setEmail(enteredText)
     }
@@ -33,17 +37,18 @@ const SignIn = ({ navigation }) => {
     }
 
     async function signInHandler() {
-        //navigation.navigate('OverviewScreen')
         setIsAuthenticating(true)
         try {
             console.log('Islem baslatiliyor...');
             const token = await loginUser(email, password)
             authCtx.authenticate(token)
-            console.log('--------------AuthToken--------------');
-            console.log(token)
+            //dispatch(setTokenString({ token: token }))
+            console.log(email);
             setIsSignInSuc(true)
         } catch (error) {
             Alert.alert('Login Failed')
+            console.log("Errorrr---------------");
+            console.log(error);
         }
         setIsAuthenticating(false)
     }
@@ -77,7 +82,7 @@ const SignIn = ({ navigation }) => {
                     <Text style={{ margin: 7, fontWeight: 'bold', fontSize: 15 }} >Password</Text>
                     <TextInput placeholder='Password' style={styles.mail}
                         autoCorrect={false} autoCapitalize={false}
-                        keyboardType='email-address' onChangeText={passwordHandler}
+                        secureTextEntry={true} onChangeText={passwordHandler}
                         value={password} />
                 </View>
                 <Pressable style={styles.pressable} >
